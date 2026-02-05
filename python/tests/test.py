@@ -1,6 +1,6 @@
 import unittest
 
-from python.human_short_code.core import ID_CODE_LENGTH, decode, encode
+from python.human_short_code.__main__ import ID_CODE_LENGTH, decode, encode
 
 
 class CodeIdTest(unittest.TestCase):
