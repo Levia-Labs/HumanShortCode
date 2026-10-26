@@ -6,7 +6,7 @@
 
 <!-- contents:start -->
 
-- [`index.test.js`](index.test.js) - JavaScript config.
+- [`vectors.test.js`](vectors.test.js) - runs every row of `spec/vectors.tsv`.
 - [`package-entry.test.js`](package-entry.test.js) - JavaScript config.
 
 <!-- contents:end -->

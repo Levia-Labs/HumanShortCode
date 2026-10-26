@@ -33,8 +33,8 @@ console.log(hsc.verify("ZZZZ-ZZZZ")); // false
 All functions take an optional `alphabet` (default `"ASDEIUNWRQXBOKH"`) and `length` (default `8`, hyphen not counted).
 
 - `encode(idNumber: number, alphabet?: string, length?: number): string`: fixed-length code with a hyphen in the middle.
-- `decode(idString: string, alphabet?: string, length?: number): number`: input is case-insensitive. Throws `invalid idString: ...` if `verify` fails.
-- `verify(code: string, alphabet?: string, length?: number): boolean`: `true` if the code has at most `length` characters, all in the alphabet.
+- `decode(idString: string, alphabet?: string, length?: number): number`: input is case-insensitive and hyphens are ignored. Throws `human-short-code: invalid code` if `verify` fails.
+- `verify(code: string, alphabet?: string, length?: number): boolean`: `true` if the code, ignoring hyphens and case, has exactly `length` characters, all in the alphabet.
 
 ## Custom alphabet
 
@@ -52,7 +52,7 @@ Use the same alphabet and length to decode as you did to encode.
 
 ## Range
 
-With the defaults, valid IDs run from `0` to `15**8 - 1` (2,562,890,624). Larger IDs are silently truncated to the code length and will not round-trip: `encode(15 ** 8)` returns `"AAAA-AAAA"`, the same as `encode(0)`. Negative numbers and non-integers are not supported.
+With the defaults, valid IDs run from `0` to `15**8 - 1` (2,562,890,624). `encode` throws `RangeError` for negative IDs and IDs of `15 ** 8` or more, and `TypeError` for non-integers. An alphabet and length whose `N ** length - 1` exceeds `Number.MAX_SAFE_INTEGER` throws `RangeError`.
 
 ## Links
 

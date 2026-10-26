@@ -1,100 +1,49 @@
 export const ID_CODE_ALPHABET = "ASDEIUNWRQXBOKH";
 export const ID_CODE_LENGTH = 8;
 
-/**
- * encode number into human short code
- * @param idNumber number to encode
- * @param alphabet string of characters number would be cast into.
- * First characters should be the most accessible for users, specially on smartphones.
- * Initial alphabet starts with most commonly accessed letters.
- * @param length how many alphabet characters should the short code contain.
- * It DOES NOT count underscore in the middle!
- * @returns human short code
- */
-export const encode = (
-  idNumber: number,
-  alphabet: string = ID_CODE_ALPHABET,
-  length: number = ID_CODE_LENGTH
-): string => {
-  const codeBase = alphabet.length;
-  const indices: number[] = [];
+const fail = (E: ErrorConstructor, text: string): never => {
+  throw new E(`human-short-code: ${text}`);
+};
 
-  // Generate indices using base conversion
-  let num = idNumber;
-  while (num > 0) {
-    indices.push(num % codeBase);
-    num = Math.floor(num / codeBase);
+/** Validate the config and return the upper-cased alphabet and the code count N^length. */
+const check = (alphabet: string, length: number): [string, number] => {
+  const a = alphabet.toUpperCase();
+  if (a.length < 2 || new Set(a).size !== a.length || !(length >= 1)) {
+    fail(RangeError, "alphabet needs 2+ unique characters and length 1+");
   }
-
-  // Pad with zeros if necessary
-  while (indices.length < length) {
-    indices.push(0);
+  let size = 1;
+  for (let i = 0; i < length; i++) {
+    size *= a.length;
+    if (!Number.isSafeInteger(size - 1)) fail(RangeError, "alphabet and length exceed the safe integer range");
   }
+  return [a, size];
+};
 
-  // Convert indices to corresponding letters in the alphabet
-  const letters = indices
-    .slice(0, length)
-    .map((i) => alphabet[i])
-    .join("");
-
-  // Insert hyphen in the middle
+/** Encode a non-negative integer as a code such as `QRQW-ISAA`. */
+export const encode = (id: number, alphabet = ID_CODE_ALPHABET, length = ID_CODE_LENGTH): string => {
+  const [a, size] = check(alphabet, length);
+  if (!Number.isInteger(id)) fail(TypeError, "id must be an integer");
+  if (id < 0 || id >= size) fail(RangeError, "id out of range");
+  let letters = "";
+  for (let n = id, i = 0; i < length; i++, n = Math.floor(n / a.length)) letters += a[n % a.length];
   const half = Math.floor(length / 2);
-  return letters.slice(0, half) + "-" + letters.slice(half);
+  return half ? `${letters.slice(0, half)}-${letters.slice(half)}` : letters;
 };
 
-/**
- * decode human short code into number, using provided alphabet.
- * It has to be the same alphabet in order to receive the same number!
- * @param idString short code to decode
- * @param alphabet alphabet used in encoding of idString
- * @param length how many characters is short code supposed to be, excluding underscore in the middle
- * @returns
- */
-export const decode = (
-  idString: string,
-  alphabet: string = ID_CODE_ALPHABET,
-  length: number = ID_CODE_LENGTH
-): number => {
-  if (!verify(idString, alphabet, length)) {
-    throw Error(`invalid idString: ${idString}`);
-  }
-
-  const codeBase = alphabet.length;
-
-  // Remove hyphen, ensure uppercase, and pad to length if necessary
-  let cleanString = idString.replace("-", "").toUpperCase();
-  cleanString = cleanString.padEnd(length, alphabet[0]);
-
-  // Convert the string back to a number
-  let number = 0;
-  for (let i = 0; i < cleanString.length; i++) {
-    number += alphabet.indexOf(cleanString[i]!) * Math.pow(codeBase, i);
-  }
-
-  return number;
+/** True when the code has exactly `length` characters, all in the alphabet, ignoring hyphens and case. */
+export const verify = (code: string, alphabet = ID_CODE_ALPHABET, length = ID_CODE_LENGTH): boolean => {
+  const [a] = check(alphabet, length);
+  const clean = code.replace(/-/g, "").toUpperCase();
+  return clean.length === length && [...clean].every((c) => a.includes(c));
 };
 
-/**
- * check whether string is valid code
- * @param code
- * @param alphabet
- * @param length
- * @returns
- */
-export const verify = (
-  code: string,
-  alphabet: string = ID_CODE_ALPHABET,
-  length: number = ID_CODE_LENGTH
-): boolean => {
-  const cleanedCode = code.replace("-", "").toUpperCase();
-  return (
-    cleanedCode.length <= length &&
-    [...cleanedCode].every((char) => alphabet.includes(char))
-  );
+/** Decode a code back to its integer id; throws when `verify` is false. */
+export const decode = (code: string, alphabet = ID_CODE_ALPHABET, length = ID_CODE_LENGTH): number => {
+  if (!verify(code, alphabet, length)) fail(Error, `invalid code: ${code}`);
+  const a = alphabet.toUpperCase();
+  let id = 0;
+  [...code.replace(/-/g, "").toUpperCase()].forEach((c, i) => (id += a.indexOf(c) * a.length ** i));
+  return id;
 };
 
-export const hsc = {
-  encode,
-  decode,
-  verify,
-};
+export const hsc = { encode, decode, verify };
