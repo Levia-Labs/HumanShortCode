@@ -1,3 +1,47 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "human-short-code"
+version = "1.1.0"
+description = "Replace long, unreadable ids with short human-readable code ids"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.9"
+authors = [{ name = "Adam Lewicki" }]
+keywords = ["id", "short-code", "human-readable", "encode", "decode", "identifier"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Levia-Labs/HumanShortCode"
+Repository = "https://github.com/Levia-Labs/HumanShortCode"
+Issues = "https://github.com/Levia-Labs/HumanShortCode/issues"
+
+[dependency-groups]
+dev = ["pytest>=8", "hypothesis>=6", "ruff>=0.6"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["human_short_code"]
+
+[tool.hatch.build.targets.sdist]
+include = ["human_short_code", "tests", "README.md", "LICENSE", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+extend = "../.crepidoma/configs/ruff.toml"

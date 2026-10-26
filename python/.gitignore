@@ -39,3 +39,6 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Build output
+dist/

@@ -1,58 +1,17 @@
-"""
-HumanShortCode: Encode and decode integer IDs into short, human-readable strings.
+"""Run as ``python -m human_short_code <number>`` to print the code for a number."""
 
-Uses a fixed-length format with a custom non-ambiguous alphabet and a middle hyphen
-to increase legibility. Provides deterministic reversible transformation between integers
-and readable codes.
-"""
+import sys
 
-ID_CODE_ALPHABET = "ASDEIUNWRQXBOKH"
-ID_CODE_LENGTH = 8
+from human_short_code import encode
 
 
-def encode(id_number, alphabet=ID_CODE_ALPHABET, length=ID_CODE_LENGTH):
-    """
-    Encode an integer ID into a fixed-length human-readable string.
-
-    Args:
-        id_number (int): The integer to encode.
-        alphabet (str): A string of unique characters used as the encoding base.
-        length (int): The total length of the resulting code (including padding).
-
-    Returns:
-        str: Encoded string with a hyphen inserted at the midpoint.
-
-    Example:
-        encode(123456) -> 'DNRX-BKAA'
-    """
-    code_base = len(alphabet)
-    indices = []
-
-    while id_number > 0:
-        indices.append(id_number % code_base)
-        id_number //= code_base
-
-    indices += [0] * (length - len(indices))
-    letters = "".join(alphabet[i] for i in indices[:length])
-    half = length // 2
-    return letters[:half] + "-" + letters[half:]
+def main() -> int:
+    if len(sys.argv) != 2:
+        sys.stderr.write("usage: python -m human_short_code <non-negative integer>\n")
+        return 2
+    sys.stdout.write(encode(int(sys.argv[1])) + "\n")
+    return 0
 
 
-def decode(id_string, alphabet=ID_CODE_ALPHABET, length=ID_CODE_LENGTH):
-    """
-    Decode a previously encoded string back into its original integer.
-
-    Args:
-        id_string (str): The encoded string, possibly containing a hyphen.
-        alphabet (str): The alphabet used for encoding.
-        length (int): Expected length of the decoded string.
-
-    Returns:
-        int: The original integer before encoding.
-
-    Example:
-        decode('DNRX-BKAA') -> 123456
-    """
-    code_base = len(alphabet)
-    id_string = id_string.replace("-", "").upper().ljust(length, alphabet[0])
-    return sum(alphabet.index(c) * (code_base**i) for i, c in enumerate(id_string))
+if __name__ == "__main__":
+    raise SystemExit(main())
