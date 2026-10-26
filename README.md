@@ -20,7 +20,7 @@
 1. **Readable.** Fixed-length `ABCD-EFGH` codes with a hyphen in the middle, easy to dictate over the phone.
 2. **Reversible.** Encoding is a bijection on the id range; no lookup table or database needed.
 3. **Configurable.** Bring your own alphabet and code length.
-4. **Zero dependencies.** Same algorithm and output in Python and JavaScript.
+4. **Zero dependencies.** Same algorithm and output in 12 languages, defined by [spec/SPEC.md](spec/SPEC.md).
 
 Good fits: referral codes, room codes, order and ticket references, support ids.
 
@@ -54,7 +54,26 @@ hsc.decode(code);                // 987654
 hsc.verify(code);                // true
 ```
 
-The default alphabet `ASDEIUNWRQXBOKH` with length 8 covers ids from 0 to 15^8 - 1 (2,562,890,624). Package docs: [python/](python/README.md), [javascript/](javascript/README.md).
+The default alphabet `ASDEIUNWRQXBOKH` with length 8 covers ids from 0 to 15^8 - 1 (2,562,890,624).
+
+## Languages
+
+| Language | Install or copy |
+| --- | --- |
+| [Python](languages/python/README.md) | `pip install human-short-code` |
+| [TypeScript](languages/typescript/README.md) | `npm install human-short-code` |
+| [JavaScript](languages/javascript/README.md) | copy `hsc.js` |
+| [Go](languages/go/README.md) | `go get github.com/Levia-Labs/HumanShortCode/languages/go` |
+| [Rust](languages/rust/README.md) | copy `src/lib.rs` or path dependency |
+| [Java](languages/java/README.md) | copy `HumanShortCode.java` |
+| [Kotlin](languages/kotlin/README.md) | copy `HumanShortCode.kt` |
+| [C#](languages/csharp/README.md) | copy `HumanShortCode.cs` or project reference |
+| [PHP](languages/php/README.md) | copy `HumanShortCode.php` or path repository |
+| [Ruby](languages/ruby/README.md) | copy `human_short_code.rb` or path gem |
+| [Swift](languages/swift/README.md) | copy `HumanShortCode.swift` or path dependency |
+| [Dart](languages/dart/README.md) | copy `human_short_code.dart` or path dependency |
+
+See [languages/README.md](languages/README.md) for source paths and test commands.
 
 ## Development
 
@@ -62,8 +81,9 @@ Tasks run through [Task](https://taskfile.dev); `task --list` is the index.
 
 ```bash
 git clone --recurse-submodules https://github.com/Levia-Labs/HumanShortCode.git
-task py:test
-task js:test
+task lang:test:all   # every language against spec/vectors.tsv
+task py:test         # Python package only
+task ts:test         # TypeScript package only
 ```
 
 ## Levia Labs
