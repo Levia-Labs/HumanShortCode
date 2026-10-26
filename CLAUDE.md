@@ -8,7 +8,8 @@ Directives, agents and hooks come from the crepidoma plugin (github.com/Levia-La
 
 ## Stack
 
-1. Python package (setuptools, `python/`); TypeScript package (jest, `javascript/`).
+1. Python package (hatchling, uv, pytest + hypothesis, `python/`); TypeScript package (tsc to `dist/`, jest + fast-check, `javascript/`).
+2. Both packages share one algorithm and version; change and release them together (`task py:publish`, `task js:publish`, each gated on `CONFIRM=yes`).
 
 ## Repo-specific rules
 
