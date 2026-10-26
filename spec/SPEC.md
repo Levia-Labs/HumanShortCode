@@ -14,7 +14,7 @@ Use the language's naming convention (`Encode` in Go and C#, `HumanShortCode.enc
 
 ## Rules
 
-1. **Config.** `alphabet` is upper-cased and must hold at least 2 characters, all unique. `length` must be at least 1. `N^length - 1`, with `N` the alphabet size, must not exceed `2^53 - 1` (JavaScript's `Number.MAX_SAFE_INTEGER`) in every language, so one config and one vector file behave the same everywhere. Use 64-bit integers where the language has fixed-width types.
+1. **Config.** `alphabet` should be printable ASCII without `-`; other characters behave differently across languages (PHP compares bytes, Python code points). It is upper-cased and must hold at least 2 characters, all unique. `length` must be at least 1. `N^length - 1`, with `N` the alphabet size, must not exceed `2^53 - 1` (JavaScript's `Number.MAX_SAFE_INTEGER`) in every language, so one config and one vector file behave the same everywhere. Use 64-bit integers where the language has fixed-width types.
 2. **Encode.** Write `id` in base `N`, least significant digit first, mapping digit `d` to `alphabet[d]`. Pad on the right with `alphabet[0]` to `length` characters. Insert `-` after the first `floor(length / 2)` characters; when that is 0 (length 1), insert nothing.
 3. **Normalize.** Remove every `-` and upper-case the rest.
 4. **Verify.** The normalized code has exactly `length` characters, all in the alphabet.
