@@ -1,75 +1,44 @@
-"""
-HumanShortCode: Encode and decode integer IDs into short, human-readable strings.
-
-Uses a fixed-length format with a custom non-ambiguous alphabet and a middle hyphen
-to increase legibility. Provides deterministic reversible transformation between integers
-and readable codes.
-"""
+"""Human Short Code reference implementation of spec/SPEC.md."""
 
 ID_CODE_ALPHABET = "ASDEIUNWRQXBOKH"
 ID_CODE_LENGTH = 8
+_MAX = 2**53 - 1
+
+
+def _check_config(alphabet, length):
+    alphabet = alphabet.upper()
+    if len(alphabet) < 2 or len(set(alphabet)) != len(alphabet) or length < 1:
+        raise ValueError("human-short-code: alphabet needs 2+ unique characters and length 1+")
+    if len(alphabet) ** length - 1 > _MAX:
+        raise ValueError("human-short-code: alphabet and length exceed the safe integer range")
+    return alphabet
 
 
 def encode(id_number, alphabet=ID_CODE_ALPHABET, length=ID_CODE_LENGTH):
-    """
-    Encode an integer ID into a fixed-length human-readable string.
-
-    Args:
-        id_number (int): The integer to encode.
-        alphabet (str): A string of unique characters used as the encoding base.
-        length (int): The total length of the resulting code (including padding).
-
-    Returns:
-        str: Encoded string with a hyphen inserted at the midpoint.
-
-    Example:
-        encode(123456) -> 'DNRX-BKAA'
-    """
-    code_base = len(alphabet)
-    indices = []
-
-    while id_number > 0:
-        indices.append(id_number % code_base)
-        id_number //= code_base
-
-    indices += [0] * (length - len(indices))
-    letters = "".join(alphabet[i] for i in indices[:length])
+    """Encode a non-negative integer as a code such as ``QRQW-ISAA``."""
+    alphabet = _check_config(alphabet, length)
+    if isinstance(id_number, bool) or not isinstance(id_number, int):
+        raise TypeError("human-short-code: id must be an integer")
+    if not 0 <= id_number < len(alphabet) ** length:
+        raise ValueError("human-short-code: id out of range")
+    digits = []
+    for _ in range(length):
+        id_number, digit = divmod(id_number, len(alphabet))
+        digits.append(alphabet[digit])
     half = length // 2
-    return letters[:half] + "-" + letters[half:]
-
-
-def decode(id_string, alphabet=ID_CODE_ALPHABET, length=ID_CODE_LENGTH):
-    """
-    Decode a previously encoded string back into its original integer.
-
-    Args:
-        id_string (str): The encoded string, possibly containing a hyphen.
-        alphabet (str): The alphabet used for encoding.
-        length (int): Expected length of the decoded string.
-
-    Returns:
-        int: The original integer before encoding.
-
-    Example:
-        decode('DNRX-BKAA') -> 123456
-    """
-    code_base = len(alphabet)
-    id_string = id_string.replace("-", "").upper().ljust(length, alphabet[0])
-    return sum(alphabet.index(c) * (code_base**i) for i, c in enumerate(id_string))
+    return "".join(digits[:half]) + ("-" if half else "") + "".join(digits[half:])
 
 
 def verify(code, alphabet=ID_CODE_ALPHABET, length=ID_CODE_LENGTH):
-    """
-    Check whether a string is a valid code.
+    """Return True when ``code`` has exactly ``length`` characters, all in the alphabet."""
+    alphabet = _check_config(alphabet, length)
+    clean = code.replace("-", "").upper()
+    return len(clean) == length and all(c in alphabet for c in clean)
 
-    Mirrors the JavaScript implementation: the first hyphen is removed, the rest is
-    upper-cased, and the result must be at most ``length`` characters, all in ``alphabet``.
 
-    Returns:
-        bool: True if the code is valid.
-
-    Example:
-        verify('DNRX-BKAA') -> True
-    """
-    cleaned = code.replace("-", "", 1).upper()
-    return len(cleaned) <= length and all(c in alphabet for c in cleaned)
+def decode(code, alphabet=ID_CODE_ALPHABET, length=ID_CODE_LENGTH):
+    """Decode a code back to its integer id; raises ValueError when invalid."""
+    if not verify(code, alphabet, length):
+        raise ValueError("human-short-code: invalid code")
+    clean = code.replace("-", "").upper()
+    return sum(alphabet.upper().index(c) * len(alphabet) ** i for i, c in enumerate(clean))

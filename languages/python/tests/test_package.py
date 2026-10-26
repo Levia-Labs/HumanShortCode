@@ -16,7 +16,7 @@ def test_package_exports_api():
 def test_known_vectors():
     assert encode(0) == "AAAA-AAAA"
     assert decode(encode(123456)) == 123456
-    assert decode("DNRX-BKAA") == decode("dnrx-bkaa")
+    assert decode("QRQW-ISAA") == decode("qrqwisaa") == 987654
 
 
 @pytest.mark.parametrize("number", [1, 9, 490, 999, 10000, 99999999])
@@ -35,12 +35,11 @@ def test_roundtrip_and_verify(n):
 
 
 def test_verify_semantics():
-    assert verify("")
+    assert not verify("")
     assert verify("aaaa-aaaa")
     assert verify("AAAAAAAA")
-    assert verify("AS")
+    assert not verify("AS")
     assert not verify("AAAA-AAAAA")
     assert not verify("ZZZZ-ZZZZ")
-    assert not verify("AAAA--AAA")
     assert verify("AB", alphabet="AB", length=2)
     assert not verify("ABA", alphabet="AB", length=2)

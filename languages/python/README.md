@@ -20,7 +20,7 @@ Requires Python 3.9 or newer.
 from human_short_code import encode, decode, verify
 
 code = encode(987654)
-print(code)          # QRQW-ISAA
+print(code)  # QRQW-ISAA
 print(decode(code))  # 987654
 print(verify(code))  # True
 print(verify("ZZZZ-ZZZZ"))  # False
@@ -37,8 +37,8 @@ python -m human_short_code 987654   # QRQW-ISAA
 All functions take an optional `alphabet` (default `"ASDEIUNWRQXBOKH"`) and `length` (default `8`, hyphen not counted). Also exported: `ID_CODE_ALPHABET`, `ID_CODE_LENGTH`.
 
 - `encode(id_number: int, alphabet=..., length=...) -> str`: fixed-length code with a hyphen in the middle.
-- `decode(code: str, alphabet=..., length=...) -> int`: input is case-insensitive. Raises `ValueError` for characters outside the alphabet.
-- `verify(code: str, alphabet=..., length=...) -> bool`: `True` if the code has at most `length` characters, all in the alphabet.
+- `decode(code: str, alphabet=..., length=...) -> int`: input is case-insensitive and hyphens are ignored. Raises `ValueError` unless `verify(code)` is true.
+- `verify(code: str, alphabet=..., length=...) -> bool`: `True` if the code, ignoring hyphens and case, has exactly `length` characters, all in the alphabet.
 
 ## Custom alphabet
 
@@ -46,15 +46,15 @@ All functions take an optional `alphabet` (default `"ASDEIUNWRQXBOKH"`) and `len
 alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
 code = encode(987654, alphabet, 6)
-print(code)                      # GSL-ZCA
-print(decode(code, alphabet, 6)) # 987654
+print(code)  # GSL-ZCA
+print(decode(code, alphabet, 6))  # 987654
 ```
 
 Use the same alphabet and length to decode as you did to encode.
 
 ## Range
 
-With the defaults, valid IDs run from `0` to `15**8 - 1` (2,562,890,624). Larger IDs are silently truncated to the code length and will not round-trip: `encode(15**8)` returns `AAAA-AAAA`, the same as `encode(0)`. Negative numbers are not supported.
+With the defaults, valid IDs run from `0` to `15**8 - 1` (2,562,890,624). `encode` raises `ValueError` for IDs outside that range, including negative numbers, and `TypeError` for non-integers.
 
 ## Links
 
