@@ -31,6 +31,13 @@
 
 Each line is a row in `spec/vectors.tsv`, so every language task covers it.
 
+## Status (2026-10-26, paused at the usage ceiling)
+
+1. Done: Task 1 (7435372), Task 2 (005e845), Task 3 (3c51dee), Task 4 (4dfdcc1).
+2. In flight when paused: Task 5 (Java, Kotlin, C#). Check `git log` for a `feat(java` commit; rerun the task if absent or partial.
+3. Not started: Task 6 (PHP, Ruby), Task 7 (Swift, Dart), Task 8 (CI, docs).
+4. Simplify pass after Task 7: `languages/go/hsc.go` is about 85 lines and `languages/rust/src/lib.rs` about 60, over the 45-line target.
+
 ---
 
 ### Task 1: Scaffold and move packages (main thread)
