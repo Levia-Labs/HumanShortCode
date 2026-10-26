@@ -14,6 +14,6 @@
 [files]
 "logo.svg" = "Project logo used by the root README."
 "folder-purposes.toml" = "Folder purposes read by the folder README generator."
-"languages/python.yml" = "Test, build, check and publish the Python package."
+"python.yml" ="Test, build, check and publish the Python package."
 "typescript.yml" = "Test, build, pack and publish the npm package."
 "languages.yml" = "Run the shared vector tests for one or every language."
