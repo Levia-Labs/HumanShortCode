@@ -15,4 +15,5 @@ includes:
   setup: .crepidoma/taskfiles/setup
   go: .crepidoma/taskfiles/go
   py: ./tasks/python.yml
-  js: ./tasks/javascript.yml
+  ts: ./tasks/typescript.yml
+  lang: ./tasks/languages.yml

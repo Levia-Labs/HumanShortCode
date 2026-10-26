@@ -1,0 +1,30 @@
+version: "3"
+
+tasks:
+  test:
+    desc: "Build and run the JavaScript package tests. Usage: task ts:test"
+    dir: "{{.TASKFILE_DIR}}/../languages/typescript"
+    cmds:
+      - npm test
+
+  build:
+    desc: "Compile languages/typescript/src to languages/typescript/dist. Usage: task ts:build"
+    dir: "{{.TASKFILE_DIR}}/../languages/typescript"
+    cmds:
+      - npm run build
+
+  pack:
+    desc: "List the files npm would publish, without writing a tarball. Usage: task ts:pack"
+    dir: "{{.TASKFILE_DIR}}/../languages/typescript"
+    deps: [build]
+    cmds:
+      - npm pack --dry-run
+
+  publish:
+    desc: "Publish human-short-code to npm. Usage: task ts:publish CONFIRM=yes"
+    dir: "{{.TASKFILE_DIR}}/../languages/typescript"
+    preconditions:
+      - sh: '[ "{{.CONFIRM}}" = "yes" ]'
+        msg: "refusing to publish: pass CONFIRM=yes"
+    cmds:
+      - npm publish

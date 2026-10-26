@@ -1,0 +1,10 @@
+name: human_short_code
+description: Human-readable short code generator.
+version: 2.0.0
+repository: https://github.com/Levia-Labs/HumanShortCode
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dev_dependencies:
+  test: ^1.25.0
