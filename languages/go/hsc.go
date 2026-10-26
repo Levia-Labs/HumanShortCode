@@ -4,7 +4,6 @@ package hsc
 import (
 	"cmp"
 	"errors"
-	"math"
 	"slices"
 	"strings"
 )
@@ -16,13 +15,17 @@ func fail(msg string) error { return errors.New("human-short-code: " + msg) }
 // check validates the config and returns the upper-cased alphabet and N^length.
 func check(alphabet string, length int) ([]rune, int64, error) {
 	a := []rune(strings.ToUpper(alphabet))
-	total := math.Pow(float64(len(a)), float64(length))
 	if len(a) < 2 || len(slices.Compact(slices.Sorted(slices.Values(a)))) != len(a) || length < 1 {
 		return nil, 0, fail("alphabet needs 2+ unique characters and length 1+")
-	} else if total > 1<<53 {
-		return nil, 0, fail("alphabet and length exceed the safe integer range")
 	}
-	return a, int64(total), nil
+	total, n := int64(1), int64(len(a))
+	for i := 0; i < length; i++ {
+		if total > 1<<53/n {
+			return nil, 0, fail("alphabet and length exceed the safe integer range")
+		}
+		total *= n
+	}
+	return a, total, nil
 }
 
 // Encode writes id as a code such as QRQW-ISAA.
