@@ -8,7 +8,7 @@ const fail = (E: ErrorConstructor, text: string): never => {
 /** Validate the config and return the upper-cased alphabet and the code count N^length. */
 const check = (alphabet: string, length: number): [string, number] => {
   const a = alphabet.toUpperCase();
-  if (a.length < 2 || new Set(a).size !== a.length || !(length >= 1)) {
+  if (a.length < 2 || new Set(a).size !== a.length || !Number.isInteger(length) || length < 1) {
     fail(RangeError, "alphabet needs 2+ unique characters and length 1+");
   }
   let size = 1;

@@ -5,7 +5,7 @@ const ID_CODE_LENGTH = 8;
 /** @param {string} alphabet @param {number} length @returns {[string, number]} upper-cased alphabet and N^length */
 function check(alphabet, length) {
   const a = alphabet.toUpperCase();
-  if (a.length < 2 || new Set(a).size !== a.length || !(length >= 1)) {
+  if (a.length < 2 || new Set(a).size !== a.length || !Number.isInteger(length) || length < 1) {
     throw new RangeError("human-short-code: alphabet needs 2+ unique characters and length 1+");
   }
   let size = 1;

@@ -31,4 +31,8 @@ class TestVectors < Minitest::Test
       assert_equal expected, got, "line #{n + 1}: #{op} #{input.inspect}"
     end
   end
+
+  def test_huge_length_raises_quickly
+    assert_raises(ArgumentError) { HumanShortCode.verify('AB', alphabet: 'AB', length: 10**9) }
+  end
 end

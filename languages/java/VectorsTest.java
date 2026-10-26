@@ -27,6 +27,8 @@ public final class VectorsTest {
                 failed++;
             }
         }
+        java.util.Locale.setDefault(new java.util.Locale("tr"));
+        if (!HumanShortCode.verify("sasdeiun")) { System.out.println("tr locale: verify failed"); failed++; }
         if (failed > 0) System.exit(1);
         System.out.println("all vectors passed");
     }

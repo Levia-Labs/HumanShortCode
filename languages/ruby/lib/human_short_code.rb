@@ -14,7 +14,9 @@ module HumanShortCode
     unless alphabet.length >= 2 && alphabet.chars.uniq.length == alphabet.length && length >= 1
       raise ArgumentError, 'human-short-code: alphabet needs 2+ unique characters and length 1+'
     end
-    raise ArgumentError, 'human-short-code: alphabet and length exceed the safe integer range' if (alphabet.length**length) - 1 > MAX
+    size = 1
+    length.times { break if (size *= alphabet.length) > MAX + 1 }
+    raise ArgumentError, 'human-short-code: alphabet and length exceed the safe integer range' if size > MAX + 1
 
     alphabet
   end

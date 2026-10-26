@@ -21,3 +21,7 @@ for (const [op, input, alphabet, length, expected] of rows) {
     else assert.strictEqual(call(), op === "decode" ? Number(expected) : expected);
   });
 }
+
+test("non-integer length is rejected", () => {
+  assert.throws(() => hsc.verify("AB", undefined, 2.5), /^RangeError: human-short-code:/);
+});

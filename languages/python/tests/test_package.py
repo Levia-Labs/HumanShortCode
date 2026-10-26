@@ -43,3 +43,14 @@ def test_verify_semantics():
     assert not verify("ZZZZ-ZZZZ")
     assert verify("AB", alphabet="AB", length=2)
     assert not verify("ABA", alphabet="AB", length=2)
+
+
+@pytest.mark.parametrize("length", [2.5, True, "8"])
+def test_non_int_length_is_type_error(length):
+    with pytest.raises(TypeError):
+        verify("AB", length=length)
+
+
+def test_huge_length_raises_quickly():
+    with pytest.raises(ValueError):
+        verify("AB", alphabet="AB", length=10**9)

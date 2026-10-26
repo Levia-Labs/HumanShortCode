@@ -30,3 +30,7 @@ describe("spec/vectors.tsv", () => {
     expect(() => hsc.encode("1")).toThrow(/^human-short-code:/);
   });
 });
+
+test("non-integer length is rejected", () => {
+  expect(() => hsc.verify("AB", undefined, 2.5)).toThrow(/^human-short-code:/);
+});

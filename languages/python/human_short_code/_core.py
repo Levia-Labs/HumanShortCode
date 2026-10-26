@@ -2,15 +2,18 @@
 
 ID_CODE_ALPHABET = "ASDEIUNWRQXBOKH"
 ID_CODE_LENGTH = 8
-_MAX = 2**53 - 1
 
 
 def _check_config(alphabet, length):
+    if type(length) is not int:
+        raise TypeError("human-short-code: length must be an integer")
     alphabet = alphabet.upper()
     if len(alphabet) < 2 or len(set(alphabet)) != len(alphabet) or length < 1:
         raise ValueError("human-short-code: alphabet needs 2+ unique characters and length 1+")
-    if len(alphabet) ** length - 1 > _MAX:
-        raise ValueError("human-short-code: alphabet and length exceed the safe integer range")
+    size = 1
+    for _ in range(length):
+        if (size := size * len(alphabet)) > 2**53:
+            raise ValueError("human-short-code: alphabet and length exceed the safe integer range")
     return alphabet
 
 

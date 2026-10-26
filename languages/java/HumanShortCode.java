@@ -15,7 +15,7 @@ public final class HumanShortCode {
 
     /** Writes {@code id} as a code. */
     public static String encode(long id, String alphabet, int length) {
-        String a = alphabet.toUpperCase();
+        String a = alphabet.toUpperCase(java.util.Locale.ROOT);
         if (id < 0 || id >= check(a, length)) throw fail("id out of range");
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++, id /= a.length()) {
@@ -27,7 +27,7 @@ public final class HumanShortCode {
 
     /** True when {@code code} has exactly {@code length} characters, all in the alphabet. */
     public static boolean verify(String code, String alphabet, int length) {
-        String a = alphabet.toUpperCase(), c = code.replace("-", "").toUpperCase();
+        String a = alphabet.toUpperCase(java.util.Locale.ROOT), c = code.replace("-", "").toUpperCase(java.util.Locale.ROOT);
         check(a, length);
         return c.length() == length && c.chars().allMatch(ch -> a.indexOf(ch) >= 0);
     }
@@ -35,7 +35,7 @@ public final class HumanShortCode {
     /** Turns a code back into its id; throws when the code is invalid. */
     public static long decode(String code, String alphabet, int length) {
         if (!verify(code, alphabet, length)) throw fail("invalid code");
-        String c = code.replace("-", "").toUpperCase(), a = alphabet.toUpperCase();
+        String c = code.replace("-", "").toUpperCase(java.util.Locale.ROOT), a = alphabet.toUpperCase(java.util.Locale.ROOT);
         long id = 0; for (int i = c.length() - 1; i >= 0; i--) id = id * a.length() + a.indexOf(c.charAt(i));
         return id;
     }
