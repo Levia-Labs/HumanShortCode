@@ -1,4 +1,4 @@
-const hsc = require("../index");
+const hsc = require("../src/index");
 
 describe("human-short-code", () => {
   test("encode and decode should be reversible", () => {
