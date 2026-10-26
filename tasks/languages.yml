@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  test:
+    desc: "Run one language's spec/vectors.tsv tests, locally or in Docker. Usage: task lang:test -- go"
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - sh languages/{{.CLI_ARGS}}/test.sh
+
+  test:all:
+    desc: "Run every languages/*/test.sh; stops at the first failure. Usage: task lang:test:all"
+    dir: "{{.ROOT_DIR}}"
+    cmds:
+      - for t in languages/*/test.sh; do echo "== $t"; sh "$t" || exit 1; done

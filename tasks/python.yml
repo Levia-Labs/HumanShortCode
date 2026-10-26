@@ -4,7 +4,7 @@ version: "3"
 # Run from the repo root; each command runs inside python/.
 
 vars:
-  PY_DIR: '{{.PY_DIR | default (printf "%s/python" .ROOT_DIR)}}'
+  PY_DIR: '{{.PY_DIR | default (printf "%s/languages/python" .ROOT_DIR)}}'
 
 tasks:
   test:
@@ -14,19 +14,19 @@ tasks:
       - uv run pytest
 
   build:
-    desc: "Build sdist and wheel into python/dist with uv"
+    desc: "Build sdist and wheel into languages/python/dist with uv"
     dir: "{{.PY_DIR}}"
     cmds:
       - uv build
 
   check:
-    desc: "Validate python/dist/* metadata with twine"
+    desc: "Validate languages/python/dist/* metadata with twine"
     dir: "{{.PY_DIR}}"
     cmds:
       - uvx twine check dist/*
 
   publish:
-    desc: "Upload python/dist/* to PyPI. Requires CONFIRM=yes and UV_PUBLISH_TOKEN in the environment"
+    desc: "Upload languages/python/dist/* to PyPI. Requires CONFIRM=yes and UV_PUBLISH_TOKEN in the environment"
     dir: "{{.PY_DIR}}"
     preconditions:
       - sh: '[ "{{.CONFIRM}}" = "yes" ]'
