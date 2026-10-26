@@ -1,0 +1,15 @@
+{
+    "name": "levia-labs/human-short-code",
+    "description": "Human-readable short code generator.",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/Levia-Labs/HumanShortCode",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "LeviaLabs\HumanShortCode\\": "src/"
+        }
+    }
+}

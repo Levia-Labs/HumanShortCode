@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="120" height="100" role="img" aria-labelledby="t">
+  <title id="t">Human Short Code logo: a long id folding into an ABCD-EFGH code</title>
+  <defs>
+    <linearGradient id="slate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a3b1c4"/>
+      <stop offset="1" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="ember" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ec8d63"/>
+      <stop offset="1" stop-color="#c2553a"/>
+    </linearGradient>
+  </defs>
+  <g fill="#64748b">
+    <circle cx="11" cy="14" r="2.2" opacity="0.35"/>
+    <circle cx="18" cy="14" r="2.2" opacity="0.45"/>
+    <circle cx="25" cy="14" r="2.2" opacity="0.55"/>
+    <circle cx="32" cy="14" r="2.2" opacity="0.65"/>
+    <circle cx="39" cy="14" r="2.2" opacity="0.75"/>
+    <circle cx="46" cy="14" r="2.2" opacity="0.85"/>
+    <circle cx="53" cy="14" r="2.2" opacity="0.95"/>
+    <circle cx="60" cy="14" r="2.2"/>
+    <circle cx="67" cy="14" r="2.2" opacity="0.95"/>
+    <circle cx="74" cy="14" r="2.2" opacity="0.85"/>
+    <circle cx="81" cy="14" r="2.2" opacity="0.75"/>
+    <circle cx="88" cy="14" r="2.2" opacity="0.65"/>
+    <circle cx="95" cy="14" r="2.2" opacity="0.55"/>
+    <circle cx="102" cy="14" r="2.2" opacity="0.45"/>
+    <circle cx="109" cy="14" r="2.2" opacity="0.35"/>
+  </g>
+  <path d="M48 30 L60 42 L72 30" fill="none" stroke="url(#ember)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="url(#slate)">
+    <rect x="8" y="56" width="10" height="30" rx="3"/>
+    <rect x="20" y="56" width="10" height="30" rx="3"/>
+    <rect x="32" y="56" width="10" height="30" rx="3"/>
+    <rect x="44" y="56" width="10" height="30" rx="3"/>
+    <rect x="66" y="56" width="10" height="30" rx="3"/>
+    <rect x="78" y="56" width="10" height="30" rx="3"/>
+    <rect x="90" y="56" width="10" height="30" rx="3"/>
+    <rect x="102" y="56" width="10" height="30" rx="3"/>
+  </g>
+  <rect x="56.5" y="68" width="7" height="6" rx="2" fill="url(#ember)"/>
+</svg>

@@ -1,0 +1,10 @@
+[package]
+name = "human-short-code"
+version = "2.0.0"
+edition = "2021"
+description = "Encode integer ids as short, human-friendly codes such as QRQW-ISAA."
+license = "MIT"
+repository = "https://github.com/Levia-Labs/HumanShortCode"
+
+[lib]
+name = "human_short_code"

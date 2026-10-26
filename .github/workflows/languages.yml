@@ -1,0 +1,27 @@
+name: languages
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.lang }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [python, typescript, javascript, go, rust, java, kotlin, csharp, php, ruby, swift, dart]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Docker keeps CI on the same pinned toolchain images as each test.sh.
+      - name: Test ${{ matrix.lang }} against spec/vectors.tsv
+        env:
+          HSC_FORCE_DOCKER: "1"
+        run: sh "languages/${{ matrix.lang }}/test.sh"
