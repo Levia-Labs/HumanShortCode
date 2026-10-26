@@ -1,0 +1,18 @@
+# One-line purpose per folder, used by .crepidoma/tools/folder_readme.py to write folder READMEs.
+
+[folders]
+".claude" = "Claude Code settings for this repo; shared agents, hooks and skills come from the crepidoma plugin."
+"docs" = "Project-level documentation assets."
+"tasks" = "Project Taskfile includes for the Python and JavaScript packages."
+"python" = "Python package `human-short-code`, published to PyPI."
+"python/human_short_code" = "Python package source: encode, decode and verify."
+"python/tests" = "Python package tests, including property tests."
+"javascript" = "TypeScript package `human-short-code`, published to npm."
+"javascript/src" = "TypeScript source: encode, decode, verify and the `hsc` namespace."
+"javascript/tests" = "Jest tests for the TypeScript package, including property tests."
+
+[files]
+"logo.svg" = "Project logo used by the root README."
+"folder-purposes.toml" = "Folder purposes read by the folder README generator."
+"python.yml" = "Test, build, check and publish the Python package."
+"javascript.yml" = "Test, build, pack and publish the npm package."

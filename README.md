@@ -1,98 +1,78 @@
+<div align="center">
+
+<img src="docs/logo.svg" alt="Human Short Code logo: a long id folding into an ABCD-EFGH code" width="120">
+
 # Human Short Code
 
-Small function to replace long numbers with ABCD-EFGH code ids.
+**Turn long numeric ids into short codes people can read, say and type.**
 
-Encode numbers into short, human-friendly codes and decode them back reliably.  
+`987654` becomes `QRQW-ISAA`, and decodes back to `987654`.
 
-Useful for generating referral codes, room codes, or compact IDs with a custom alphabet.
+[![PyPI](https://img.shields.io/pypi/v/human-short-code.svg)](https://pypi.org/project/human-short-code/)
+[![npm](https://img.shields.io/npm/v/human-short-code.svg)](https://www.npmjs.com/package/human-short-code)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![built on Crepidoma](https://img.shields.io/badge/built%20on-Crepidoma-d97757.svg)](https://github.com/Levia-Labs/Crepidoma)
 
-## Features
+</div>
 
-- Encode numbers to short strings with a custom alphabet  
-- Decode short strings back to numbers  
-- Verify if a code is valid  
-- Configurable code length and alphabet  
-- Inserts a hyphen in the middle for better readability  
+## Why
 
-## Installation
+1. **Readable.** Fixed-length `ABCD-EFGH` codes with a hyphen in the middle, easy to dictate over the phone.
+2. **Reversible.** Encoding is a bijection on the id range; no lookup table or database needed.
+3. **Configurable.** Bring your own alphabet and code length.
+4. **Zero dependencies.** Same algorithm and output in Python and JavaScript.
+
+Good fits: referral codes, room codes, order and ticket references, support ids.
+
+## Quick start
+
+Python:
+
+```bash
+pip install human-short-code
+```
+
+```python
+from human_short_code import encode, decode, verify
+
+code = encode(987654)   # "QRQW-ISAA"
+decode(code)            # 987654
+verify(code)            # True
+```
+
+JavaScript / TypeScript:
 
 ```bash
 npm install human-short-code
 ```
 
-or
-
-```bash
-yarn add human-short-code
-```
-
-## Usage
-
-```typescript
+```ts
 import { hsc } from "human-short-code";
 
-const myNumber = 123456789;
-
-// Encode number to short code
-const shortCode = hsc.encode(myNumber);
-console.log(shortCode); // Example output: "QIUN-ESAD"
-
-// Decode short code back to number
-const originalNumber = hsc.decode(shortCode);
-console.log(originalNumber); // 123456789
-
-// Verify if a code is valid
-const isValid = hsc.verify(shortCode);
-console.log(isValid); // true
+const code = hsc.encode(987654); // "QRQW-ISAA"
+hsc.decode(code);                // 987654
+hsc.verify(code);                // true
 ```
 
-## API
+The default alphabet `ASDEIUNWRQXBOKH` with length 8 covers ids from 0 to 15^8 - 1 (2,562,890,624). Package docs: [python/](python/README.md), [javascript/](javascript/README.md).
 
-`hsc.encode(idNumber: number, alphabet?: string, length?: number): string`
+## Development
 
-Encode a number into a human-readable short code.
+Tasks run through [Task](https://taskfile.dev); `task --list` is the index.
 
-- idNumber — Number to encode
-- alphabet — Optional custom alphabet string (default: "ASDEIUNWRQXBOKH")
-- length — Length of the generated code excluding hyphen (default: 8)
-
-Returns a string code with a hyphen inserted in the middle.
-
-`hsc.decode(idString: string, alphabet?: string, length?: number): number`
-
-Decode a short code string back into a number.
-
-- idString — The short code to decode
-- alphabet — Optional alphabet used during encoding (default: "ASDEIUNWRQXBOKH")
-- length — Expected code length excluding hyphen (default: 8)
-
-Throws an error if the code is invalid.
-
-`hsc.verify(code: string, alphabet?: string, length?: number): boolean`
-
-Check if a short code string is valid.
-
-- code — Code string to verify
-- alphabet — Alphabet used for validation (default: "ASDEIUNWRQXBOKH")
-- length — Maximum allowed length excluding hyphen (default: 8)
-
-Returns true if valid, otherwise false.
-
-## Customization
-
-You can customize the alphabet and code length:
-
-```typescript
-const customAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // no confusing letters like I, O
-const codeLength = 6;
-
-const code = hsc.encode(987654, customAlphabet, codeLength);
-console.log(code); // e.g. "BAC-DEF"
-
-const num = hsc.decode(code, customAlphabet, codeLength);
-console.log(num); // 987654
+```bash
+git clone --recurse-submodules https://github.com/Levia-Labs/HumanShortCode.git
+task py:test
+task js:test
 ```
 
-## Tests
+## Levia Labs
 
-`npm run test`
+1. [Crepidoma](https://github.com/Levia-Labs/Crepidoma): the shared LLM tooling foundation this repo is built on.
+2. [QC2C](https://github.com/Levia-Labs/QC2C): quick coordinates to country.
+3. [beat-analyser](https://github.com/Levia-Labs/beat-analyser): music beat data extraction with madmom, dockerized.
+4. [saber-tooth](https://github.com/Levia-Labs/saber-tooth): Beat Saber modding API for custom levels.
+
+## License
+
+[MIT](LICENSE)
