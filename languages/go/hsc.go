@@ -2,89 +2,64 @@
 package hsc
 
 import (
+	"cmp"
 	"errors"
+	"math"
+	"slices"
 	"strings"
 )
 
-const (
-	// DefaultAlphabet is the alphabet used when none is given.
-	DefaultAlphabet = "ASDEIUNWRQXBOKH"
-	// DefaultLength is the number of code characters used when none is given.
-	DefaultLength = 8
-)
+const DefaultAlphabet, DefaultLength = "ASDEIUNWRQXBOKH", 8
 
-// space validates the config and returns the upper-cased alphabet and N^length.
-func space(alphabet string, length int) ([]rune, int64, error) {
+func fail(msg string) error { return errors.New("human-short-code: " + msg) }
+
+// check validates the config and returns the upper-cased alphabet and N^length.
+func check(alphabet string, length int) ([]rune, int64, error) {
 	a := []rune(strings.ToUpper(alphabet))
-	seen := map[rune]bool{}
-	for _, c := range a {
-		seen[c] = true
+	total := math.Pow(float64(len(a)), float64(length))
+	if len(a) < 2 || len(slices.Compact(slices.Sorted(slices.Values(a)))) != len(a) || length < 1 {
+		return nil, 0, fail("alphabet needs 2+ unique characters and length 1+")
+	} else if total > 1<<53 {
+		return nil, 0, fail("alphabet and length exceed the safe integer range")
 	}
-	if len(a) < 2 || len(seen) != len(a) || length < 1 {
-		return nil, 0, errors.New("human-short-code: alphabet needs 2+ unique characters and length 1+")
-	}
-	n, total := int64(len(a)), int64(1)
-	for i := 0; i < length; i++ {
-		if total > (int64(1)<<53)/n { // total*n would exceed 2^53, so N^length - 1 > 2^53 - 1
-			return nil, 0, errors.New("human-short-code: alphabet and length exceed the safe integer range")
-		}
-		total *= n
-	}
-	return a, total, nil
+	return a, int64(total), nil
 }
 
 // Encode writes id as a code such as QRQW-ISAA.
 func Encode(id int64, alphabet string, length int) (string, error) {
-	a, total, err := space(alphabet, length)
-	if err != nil {
-		return "", err
-	}
-	if id < 0 || id >= total {
-		return "", errors.New("human-short-code: id out of range")
+	a, total, err := check(alphabet, length)
+	if err != nil || id < 0 || id >= total {
+		return "", cmp.Or(err, fail("id out of range"))
 	}
 	digits := make([]rune, length)
 	for i := range digits {
-		digits[i] = a[id%int64(len(a))]
-		id /= int64(len(a))
+		digits[i], id = a[id%int64(len(a))], id/int64(len(a))
 	}
-	half := length / 2
-	if half == 0 {
-		return string(digits), nil
+	if length > 1 {
+		digits = slices.Insert(digits, length/2, '-')
 	}
-	return string(digits[:half]) + "-" + string(digits[half:]), nil
+	return string(digits), nil
 }
 
 // Verify reports whether code has exactly length characters, all in the alphabet.
 func Verify(code, alphabet string, length int) (bool, error) {
-	a, _, err := space(alphabet, length)
-	if err != nil {
-		return false, err
-	}
+	a, _, err := check(alphabet, length)
 	clean := []rune(strings.ToUpper(strings.ReplaceAll(code, "-", "")))
-	if len(clean) != length {
-		return false, nil
-	}
+	ok := err == nil && len(clean) == length
 	for _, c := range clean {
-		if !strings.ContainsRune(string(a), c) {
-			return false, nil
-		}
+		ok = ok && slices.Contains(a, c)
 	}
-	return true, nil
+	return ok, err
 }
 
 // Decode turns a code back into its id; it errors when the code is invalid.
-func Decode(code, alphabet string, length int) (int64, error) {
+func Decode(code, alphabet string, length int) (id int64, err error) {
 	if ok, err := Verify(code, alphabet, length); err != nil || !ok {
-		if err == nil {
-			err = errors.New("human-short-code: invalid code")
-		}
-		return 0, err
+		return 0, cmp.Or(err, fail("invalid code"))
 	}
-	a, _, _ := space(alphabet, length)
-	var id, scale int64 = 0, 1
-	for _, c := range strings.ToUpper(strings.ReplaceAll(code, "-", "")) {
-		id += int64(strings.IndexRune(string(a), c)) * scale
-		scale *= int64(len(a))
+	a, clean := []rune(strings.ToUpper(alphabet)), []rune(strings.ToUpper(strings.ReplaceAll(code, "-", "")))
+	for i := len(clean) - 1; i >= 0; i-- {
+		id = id*int64(len(a)) + int64(slices.Index(a, clean[i]))
 	}
 	return id, nil
 }
