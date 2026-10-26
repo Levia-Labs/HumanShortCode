@@ -1,98 +1,61 @@
-# Human Short Code
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Levia-Labs/HumanShortCode/master/docs/logo.svg" alt="HumanShortCode" width="120">
+</p>
 
-Small function to replace long numbers with ABCD-EFGH code ids.
+# human-short-code
 
-Encode numbers into short, human-friendly codes and decode them back reliably.  
+Turn integer IDs into short, readable codes like `QRQW-ISAA`, and back.
 
-Useful for generating referral codes, room codes, or compact IDs with a custom alphabet.
-
-## Features
-
-- Encode numbers to short strings with a custom alphabet  
-- Decode short strings back to numbers  
-- Verify if a code is valid  
-- Configurable code length and alphabet  
-- Inserts a hyphen in the middle for better readability  
-
-## Installation
+## Install
 
 ```bash
 npm install human-short-code
 ```
 
-or
-
-```bash
-yarn add human-short-code
-```
+Requires Node 18 or newer. TypeScript types are included.
 
 ## Usage
 
 ```typescript
 import { hsc } from "human-short-code";
 
-const myNumber = 123456789;
-
-// Encode number to short code
-const shortCode = hsc.encode(myNumber);
-console.log(shortCode); // Example output: "QIUN-ESAD"
-
-// Decode short code back to number
-const originalNumber = hsc.decode(shortCode);
-console.log(originalNumber); // 123456789
-
-// Verify if a code is valid
-const isValid = hsc.verify(shortCode);
-console.log(isValid); // true
+const code = hsc.encode(987654);
+console.log(code);                  // "QRQW-ISAA"
+console.log(hsc.decode(code));      // 987654
+console.log(hsc.verify(code));      // true
+console.log(hsc.verify("ZZZZ-ZZZZ")); // false
 ```
+
+`encode`, `decode`, `verify`, `ID_CODE_ALPHABET` and `ID_CODE_LENGTH` are also available as named exports.
 
 ## API
 
-`hsc.encode(idNumber: number, alphabet?: string, length?: number): string`
+All functions take an optional `alphabet` (default `"ASDEIUNWRQXBOKH"`) and `length` (default `8`, hyphen not counted).
 
-Encode a number into a human-readable short code.
+- `encode(idNumber: number, alphabet?: string, length?: number): string`: fixed-length code with a hyphen in the middle.
+- `decode(idString: string, alphabet?: string, length?: number): number`: input is case-insensitive. Throws `invalid idString: ...` if `verify` fails.
+- `verify(code: string, alphabet?: string, length?: number): boolean`: `true` if the code has at most `length` characters, all in the alphabet.
 
-- idNumber — Number to encode
-- alphabet — Optional custom alphabet string (default: "ASDEIUNWRQXBOKH")
-- length — Length of the generated code excluding hyphen (default: 8)
-
-Returns a string code with a hyphen inserted in the middle.
-
-`hsc.decode(idString: string, alphabet?: string, length?: number): number`
-
-Decode a short code string back into a number.
-
-- idString — The short code to decode
-- alphabet — Optional alphabet used during encoding (default: "ASDEIUNWRQXBOKH")
-- length — Expected code length excluding hyphen (default: 8)
-
-Throws an error if the code is invalid.
-
-`hsc.verify(code: string, alphabet?: string, length?: number): boolean`
-
-Check if a short code string is valid.
-
-- code — Code string to verify
-- alphabet — Alphabet used for validation (default: "ASDEIUNWRQXBOKH")
-- length — Maximum allowed length excluding hyphen (default: 8)
-
-Returns true if valid, otherwise false.
-
-## Customization
-
-You can customize the alphabet and code length:
+## Custom alphabet
 
 ```typescript
-const customAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // no confusing letters like I, O
-const codeLength = 6;
+import { encode, decode } from "human-short-code";
 
-const code = hsc.encode(987654, customAlphabet, codeLength);
-console.log(code); // e.g. "BAC-DEF"
+const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
-const num = hsc.decode(code, customAlphabet, codeLength);
-console.log(num); // 987654
+const code = encode(987654, alphabet, 6);
+console.log(code);                       // "GSL-ZCA"
+console.log(decode(code, alphabet, 6));  // 987654
 ```
 
-## Tests
+Use the same alphabet and length to decode as you did to encode.
 
-`npm run test`
+## Range
+
+With the defaults, valid IDs run from `0` to `15**8 - 1` (2,562,890,624). Larger IDs are silently truncated to the code length and will not round-trip: `encode(15 ** 8)` returns `"AAAA-AAAA"`, the same as `encode(0)`. Negative numbers and non-integers are not supported.
+
+## Links
+
+Source, Python package and issues: https://github.com/Levia-Labs/HumanShortCode
+
+MIT license.

@@ -1,101 +1,63 @@
-# Human Short Code
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Levia-Labs/HumanShortCode/master/docs/logo.svg" alt="HumanShortCode" width="120">
+</p>
 
-Encode integers into compact, human-readable codes and decode them reliably.  
-Useful for generating invitation codes, referral links, tracking IDs, or session tokens.
+# human-short-code
 
-## Features
+Turn integer IDs into short, readable codes like `QRQW-ISAA`, and back.
 
-- Encode numbers into fixed-length readable codes  
-- Decode codes back to original numbers  
-- Validate code format  
-- Customizable alphabet and length  
-- Mid-string hyphen for clarity  
-
-## Installation
+## Install
 
 ```bash
 pip install human-short-code
 ```
 
-Or install from source:
-
-```bash
-git clone https://github.com/yourusername/human-short-code.git
-cd human-short-code
-python -m build
-pip install dist/*.whl
-```
+Requires Python 3.9 or newer.
 
 ## Usage
 
 ```python
 from human_short_code import encode, decode, verify
 
-number = 123456789
-
-# Encode number
-code = encode(number)
-print(code)  # e.g. 'QIUN-ESAD'
-
-# Decode code
-original = decode(code)
-print(original)  # 123456789
-
-# Verify code format
+code = encode(987654)
+print(code)          # QRQW-ISAA
+print(decode(code))  # 987654
 print(verify(code))  # True
+print(verify("ZZZZ-ZZZZ"))  # False
+```
+
+Command line:
+
+```bash
+python -m human_short_code 987654   # QRQW-ISAA
 ```
 
 ## API
 
-`encode(id_number: int, alphabet: str = ..., length: int = ...) -> str`
+All functions take an optional `alphabet` (default `"ASDEIUNWRQXBOKH"`) and `length` (default `8`, hyphen not counted). Also exported: `ID_CODE_ALPHABET`, `ID_CODE_LENGTH`.
 
-Convert an integer into a short, fixed-length alphanumeric code.
+- `encode(id_number: int, alphabet=..., length=...) -> str`: fixed-length code with a hyphen in the middle.
+- `decode(code: str, alphabet=..., length=...) -> int`: input is case-insensitive. Raises `ValueError` for characters outside the alphabet.
+- `verify(code: str, alphabet=..., length=...) -> bool`: `True` if the code has at most `length` characters, all in the alphabet.
 
-- id_number: Integer to encode
-- alphabet: Optional custom alphabet (default: "ASDEIUNWRQXBOKH")
-- length: Total code length excluding hyphen (default: 8)
-
-Returns a code string with a hyphen inserted at the center.
-
-`decode(code: str, alphabet: str = ..., length: int = ...) -> int`
-
-Decode a code string back into the original integer.
-
-- code: Code string to decode
-- alphabet: Optional custom alphabet used in encoding
-- length: Expected code length excluding hyphen
-
-Raises ValueError if invalid input.
-
-`verify(code: str, alphabet: str = ..., length: int = ...) -> bool`
-
-Check if a code is valid for the given alphabet and length.
-
-- code: Code string to verify
-- alphabet: Optional alphabet to validate against
-- length: Maximum code length excluding hyphen
-
-Returns True if valid, False otherwise.
-
-## Customization
+## Custom alphabet
 
 ```python
-custom_alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ"
-custom_length = 6
+alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ"
 
-code = encode(987654, custom_alphabet, custom_length)
-print(code)  # e.g. 'BAC-DEF'
-
-number = decode(code, custom_alphabet, custom_length)
-print(number)  # 987654
+code = encode(987654, alphabet, 6)
+print(code)                      # GSL-ZCA
+print(decode(code, alphabet, 6)) # 987654
 ```
 
-## Tests
+Use the same alphabet and length to decode as you did to encode.
 
-```bash
-pytest
-```
+## Range
 
-## License
+With the defaults, valid IDs run from `0` to `15**8 - 1` (2,562,890,624). Larger IDs are silently truncated to the code length and will not round-trip: `encode(15**8)` returns `AAAA-AAAA`, the same as `encode(0)`. Negative numbers are not supported.
 
-MIT
+## Links
+
+Source, JavaScript package and issues: https://github.com/Levia-Labs/HumanShortCode
+
+MIT license.
