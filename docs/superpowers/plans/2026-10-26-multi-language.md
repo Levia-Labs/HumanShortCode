@@ -31,11 +31,11 @@
 
 Each line is a row in `spec/vectors.tsv`, so every language task covers it.
 
-## Status (2026-10-26, paused at the usage ceiling)
+## Status: complete
 
-1. Done: Task 1 (7435372), Task 2 (005e845), Task 3 (3c51dee), Task 4 (4dfdcc1), Task 5 (e181636; C# runs locally on newer .NET via DOTNET_ROLL_FORWARD=Major).
-2. Not started: Task 6 (PHP, Ruby), Task 7 (Swift, Dart), Task 8 (CI, docs).
-3. Simplify pass after Task 7: `languages/go/hsc.go` is about 85 lines and `languages/rust/src/lib.rs` about 60, over the 45-line target.
+1. Tasks 1 to 8 done; `task lang:test:all` green for all 12 languages.
+2. Sources after the simplify pass: 44 to 68 lines (Go 68 keeps explicit error returns; Rust 59 after rustfmt).
+3. Review fixes in cf55cdc: Java casing uses `Locale.ROOT`, JS/TS/Python reject non-integer lengths, Python/Ruby limit check stops after at most 53 multiplications.
 
 ---
 
